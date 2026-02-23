@@ -6,7 +6,7 @@ import processing.core.PApplet;
 import sudoku.gameplay.Sudoku;
 import sudoku.gui.Layout;
 import sudoku.services.SudokuService;
-import sudoku.solver.LuaSolver;
+import sudoku.solver.LogicalSolver;
 
 public class AppMain extends PApplet {
 
@@ -16,7 +16,7 @@ public class AppMain extends PApplet {
 
 	Sudoku sudoku = null;
 	SudokuService service = SudokuService.getInstance();
-	LuaSolver solver = null;
+	LogicalSolver solver = null;
 	JGui gui;
 	Layout appLayout;
 
@@ -45,7 +45,7 @@ public class AppMain extends PApplet {
 		sudoku.validateRules();
 		sudoku.printInfo();
 
-		solver = new LuaSolver();
+		solver = new LogicalSolver();
 //		solver.solve(sudoku);
 		solver.solverStart(sudoku);
 
