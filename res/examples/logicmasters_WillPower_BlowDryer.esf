@@ -1,0 +1,130 @@
+{
+	"format": "ESF1.0",
+	"width": 9,
+	"height": 9,
+	"rules_text": "Normal sudoku rules apply. Neighboring digits on orange dutch whisper lines differ by at least 4. Digits on cells connected by a black dot have a ratio of 1:2.",
+	"valid": [ "1", "2", "3", "4", "5", "6", "7", "8", "9" ],
+	"meta": {
+		"author": "Will Power",
+		"name": "Blow Dryer",
+		"source": "logic-masters germany",
+		"url": "https://logic-masters.de/Raetselportal/Raetsel/zeigen.php?id=000RKT"
+	},
+	"given": [
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . .",
+		". . . . . . . . ."
+	],
+	"active": [
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #",
+		"# # # # # # # # #"
+	],
+	"regions": [
+		[1, 1, 2, 1, 3, 1, 1, 2, 2, 2, 3, 2, 1, 3, 2, 3, 3, 3],
+		[4, 1, 5, 1, 6, 1, 4, 2, 5, 2, 6, 2, 4, 3, 5, 3, 6, 3],
+		[7, 1, 8, 1, 9, 1, 7, 2, 8, 2, 9, 2, 7, 3, 8, 3, 9, 3],
+		[1, 4, 2, 4, 3, 4, 1, 5, 2, 5, 3, 5, 1, 6, 2, 6, 3, 6],
+		[4, 4, 5, 4, 6, 4, 4, 5, 5, 5, 6, 5, 4, 6, 5, 6, 6, 6],
+		[7, 4, 8, 4, 9, 4, 7, 5, 8, 5, 9, 5, 7, 6, 8, 6, 9, 6],
+		[1, 7, 2, 7, 3, 7, 1, 8, 2, 8, 3, 8, 1, 9, 2, 9, 3, 9],
+		[4, 7, 5, 7, 6, 7, 4, 8, 5, 8, 6, 8, 4, 9, 5, 9, 6, 9],
+		[7, 7, 8, 7, 9, 7, 7, 8, 8, 8, 9, 8, 7, 9, 8, 9, 9, 9]
+	],
+	"rules": [
+		{
+			"type": "LatinSquare",
+			"size": 9,
+			"startcolumn": 1,
+			"startrow": 1
+		},
+		{
+			"type": "Arrow",
+			"arrows": [
+				{ "pill": 1, "cells": [6, 1, 6, 2, 6, 3] },
+				{ "pill": 1, "cells": [7, 2, 7, 3, 7, 4] },
+				{ "pill": 1, "cells": [8, 3, 8, 4, 8, 5] },
+				{ "pill": 1, "cells": [9, 6, 8, 6, 7, 6] },
+				{ "pill": 1, "cells": [8, 7, 7, 7, 6, 7] },
+				{ "pill": 1, "cells": [7, 8, 6, 8, 5, 8] },
+				{ "pill": 1, "cells": [4, 9, 4, 8, 4, 7] },
+				{ "pill": 1, "cells": [3, 8, 3, 7, 3, 6] },
+				{ "pill": 1, "cells": [2, 7, 2, 6, 2, 5] },
+				{ "pill": 1, "cells": [1, 4, 2, 4, 3, 4] },
+				{ "pill": 1, "cells": [2, 3, 3, 3, 4, 3] },
+				{ "pill": 1, "cells": [3, 2, 4, 2, 5, 2] }
+			],
+			"draw": {
+				"layer": "lines",
+				"type": "Arrow",
+				"thickness": 0.08,
+				"colors": {
+					"line": "#AAAAAA",
+					"fill": "#FFFFFF"
+				}
+			}
+		},
+		{
+			"type": "KropkiBlack",
+			"pairs": [
+				[ 4, 1, 4, 2 ],
+				[ 5, 1, 5, 2 ],
+				[ 4, 2, 5, 2 ],
+				[ 6, 2, 6, 3 ],
+				[ 1, 3, 2, 3 ],
+				[ 6, 3, 7, 3 ],
+				[ 8, 4, 8, 5 ],
+				[ 6, 6, 6, 7 ],
+				[ 6, 7, 6, 8 ],
+				[ 6, 8, 6, 9 ],
+				[ 3, 9, 4, 9 ]
+			],
+			"negative": False,
+			"draw": {
+				"layer": "overlay",
+				"type": "Dot",
+				"size": 0.33,
+				"colors": {
+					"fill": "#000000",
+					"border": "#000000"
+				}
+			}
+		},
+		{
+			"type": "SumKillerCage",
+			"cages": [
+				{ "result": 11, "cells": [4, 4, 4, 5] } 
+			],
+			"draw": {
+				"layer": "lines",
+				"type": "Killeroutline",
+				"style": "dashed",
+				"thickness": 0.033,
+				"colors": {
+					"line": "#000000",
+					"text": "#000000"
+				},
+				"textsize": 0.2
+			}
+		}
+	],
+	"lines": [
+	],
+	"overlays": [
+		{
+			
+		}
+	]
+}
