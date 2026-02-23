@@ -7,6 +7,7 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import sudoku.gui.drawings.DrawingRegistry;
 import sudoku.gui.drawings.SudokuDraw;
+import sudoku.solver.KropkiDotStrategies;
 
 public abstract class KropkiDot extends Rule {
 
@@ -18,6 +19,7 @@ public abstract class KropkiDot extends Rule {
 	public KropkiDot() {
 		super();
 		negativeConstrain = false;
+		strategies.add(new KropkiDotStrategies(this));
 	}
 
 	@Override
@@ -47,5 +49,13 @@ public abstract class KropkiDot extends Rule {
 				list.add(drawing);
 			}
 		}
+	}
+
+	public boolean hasNegativeConstrain() {
+		return negativeConstrain;
+	}
+
+	public int[][] getPairs() {
+		return pairs;
 	}
 }

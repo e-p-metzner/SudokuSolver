@@ -121,6 +121,14 @@ public class Cell {
 		return candidates;
 	}
 
+	public char[] getCandidatesArray() {
+		char[] cc = new char[candidates.size()];
+		for (int i = 0; i < cc.length; i++) {
+			cc[i] = candidates.get(i);
+		}
+		return cc;
+	}
+
 	public void addCandidate(char c) {
 		boolean isAvailable = false;
 		for (char a : available) {
