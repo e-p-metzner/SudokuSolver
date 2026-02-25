@@ -27,6 +27,11 @@ public class KropkiDotStrategies implements SolvingStrategy {
 	}
 
 	@Override
+	public int difficulty() {
+		return 2;
+	}
+
+	@Override
 	public void clearCache() {
 		if (horizontalPairs != null) {
 			for (int i = 0; i < horizontalPairs.length; i++) {
@@ -40,11 +45,6 @@ public class KropkiDotStrategies implements SolvingStrategy {
 			}
 			verticalPairs = null;
 		}
-	}
-
-	@Override
-	public int difficulty() {
-		return 2;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class KropkiDotStrategies implements SolvingStrategy {
 		}
 	}
 
-	private boolean reduceBlackPair(Cell main, Cell black_partner) {
+	private boolean reduceBlackPair(Cell main, Cell black_partner, boolean negative) {
 		if (!main.isActive()) {
 			throw new SolverException("Invalid Cell coordinates!");
 		}
@@ -122,13 +122,28 @@ public class KropkiDotStrategies implements SolvingStrategy {
 		if (black_partner.isSolved()) {
 			bp = new char[] { black_partner.getContent() };
 		}
-		for (char c : cc) {
-			int i = c - '0';
-			char c2 = (char) ('0' + i + i);
-			char ch = (char) ('0' + i / 2);
-			if (!Tools.contains(c2, bp) && !Tools.contains(ch, bp)) {
-				main.removeAvailable(c);
-				reduction = true;
+		if (negative) {
+			if (bp.length > 1) {
+				return reduction;
+			}
+			int j = bp[0] - '0';
+			for (char c : cc) {
+				int i = c - '0';
+				if (i + i == j || i == j + j) {
+					main.removeAvailable(c);
+					reduction = true;
+				}
+			}
+			return reduction;
+		} else {
+			for (char c : cc) {
+				int i = c - '0';
+				char c2 = (char) ('0' + i + i);
+				char ch = (char) ('0' + i / 2);
+				if (!Tools.contains(c2, bp) && !Tools.contains(ch, bp)) {
+					main.removeAvailable(c);
+					reduction = true;
+				}
 			}
 		}
 		return reduction;
@@ -147,7 +162,9 @@ public class KropkiDotStrategies implements SolvingStrategy {
 			if (!cellB.isActive()) {
 				throw new SolverException("Invalid Cell coordinates!");
 			}
-			reduction = reduction || reduceBlackPair(cellA, cellB);
+			if (reduceBlackPair(cellA, cellB, false) || reduceBlackPair(cellB, cellA, false)) {
+				reduction = true;
+			}
 		}
 		// dot-chains logic
 		for (int[] pairA : dots.getPairs()) {
@@ -212,11 +229,13 @@ public class KropkiDotStrategies implements SolvingStrategy {
 				Cell cellA = grid[j][i];
 				if (i + 1 < gw && horizontalPairs[j][i]) {
 					Cell cellB = grid[j][i + 1];
-					reduction = reduction || reduceBlackPair(cellA, cellB);
+					reduction = reduction || reduceBlackPair(cellA, cellB, true);
+					reduction = reduction || reduceBlackPair(cellB, cellA, true);
 				}
 				if (j + 1 < gh && verticalPairs[j][i]) {
 					Cell cellB = grid[j + 1][i];
-					reduction = reduction || reduceBlackPair(cellA, cellB);
+					reduction = reduction || reduceBlackPair(cellA, cellB, true);
+					reduction = reduction || reduceBlackPair(cellB, cellA, true);
 				}
 			}
 		}
