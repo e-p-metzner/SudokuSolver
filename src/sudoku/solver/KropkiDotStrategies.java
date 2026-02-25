@@ -1,5 +1,9 @@
 package sudoku.solver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import sudoku.gameplay.Cell;
 import sudoku.gameplay.Sudoku;
 import sudoku.rules.KropkiBlack;
@@ -16,6 +20,7 @@ public class KropkiDotStrategies implements SolvingStrategy {
 	private boolean negativeConstrain;
 	private boolean[][] horizontalPairs;
 	private boolean[][] verticalPairs;
+	private List<int[]> reducedDots;
 	private KropkiDot dots;
 
 	public KropkiDotStrategies(KropkiDot dots) {
@@ -24,6 +29,7 @@ public class KropkiDotStrategies implements SolvingStrategy {
 		this.negativeConstrain = false;
 		horizontalPairs = null;
 		verticalPairs = null;
+		reducedDots = new ArrayList<int[]>();
 	}
 
 	@Override
@@ -59,16 +65,26 @@ public class KropkiDotStrategies implements SolvingStrategy {
 				initNegativArrays(sudoku);
 			}
 		}
+		reducedDots.clear();
+		String dottype = "Kropki-dot";
 		if (dots instanceof KropkiBlack) {
-			return reduceBlack(sudoku, log, (KropkiBlack) dots);
+			dottype = "black Kropki-dot";
+			reduceBlack(sudoku, log, (KropkiBlack) dots);
 		}
 		if (dots instanceof KropkiV) {
-			return reduceV(sudoku, log, (KropkiV) dots);
+			dottype = "V-dot";
+			reduceV(sudoku, log, (KropkiV) dots);
 		}
 		if (dots instanceof KropkiX) {
-			return reduceX(sudoku, log, (KropkiX) dots);
+			dottype = "X-dot";
+			reduceX(sudoku, log, (KropkiX) dots);
 		}
-		return false;
+		Cell[][] grid = sudoku.getGrid();
+		for (int[] dot : reducedDots) {
+			log.logStep("Reduction from %s: R%dC%d -> %s", //
+					dottype, dot[1] + 1, dot[0] + 1, Arrays.toString(grid[dot[1]][dot[0]].getAvailables()));
+		}
+		return reducedDots.size() > 0;
 	}
 
 	private void initNegativArrays(Sudoku sudoku) {
@@ -107,6 +123,15 @@ public class KropkiDotStrategies implements SolvingStrategy {
 				throw new SolverException("Invalid Kropki-dot pair R" + (pair[1] + 1) + "C" + (pair[0] + 1) + "/R" + (pair[3] + 1) + "C" + (pair[2] + 1));
 			}
 		}
+	}
+
+	private void addReducedDot(int col, int row) {
+		for (int[] dot : reducedDots) {
+			if (dot[0] == col && dot[1] == row) {
+				return;
+			}
+		}
+		reducedDots.add(new int[] { col, row });
 	}
 
 	private boolean reduceBlackPair(Cell main, Cell black_partner, boolean negative) {
@@ -149,9 +174,8 @@ public class KropkiDotStrategies implements SolvingStrategy {
 		return reduction;
 	}
 
-	private boolean reduceBlack(Sudoku sudoku, SolveLog log, KropkiBlack dots) {
+	private void reduceBlack(Sudoku sudoku, SolveLog log, KropkiBlack dots) {
 		Cell[][] grid = sudoku.getGrid();
-		boolean reduction = false;
 		// simple dot logic
 		for (int[] pair : dots.getPairs()) {
 			Cell cellA = grid[pair[1]][pair[0]];
@@ -162,8 +186,11 @@ public class KropkiDotStrategies implements SolvingStrategy {
 			if (!cellB.isActive()) {
 				throw new SolverException("Invalid Cell coordinates!");
 			}
-			if (reduceBlackPair(cellA, cellB, false) || reduceBlackPair(cellB, cellA, false)) {
-				reduction = true;
+			if (reduceBlackPair(cellA, cellB, false)) {
+				addReducedDot(pair[0], pair[1]);
+			}
+			if (reduceBlackPair(cellB, cellA, false)) {
+				addReducedDot(pair[2], pair[3]);
 			}
 		}
 		// dot-chains logic
@@ -186,13 +213,17 @@ public class KropkiDotStrategies implements SolvingStrategy {
 					}
 				}
 				if (redc1) {
+					redc1 = false;
 					Character[] cc = c1.getCandidates().toArray(new Character[0]);
 					for (Character c : cc) {
 						if (c.charValue() == '2' || c.charValue() == '4') {
 							continue;
 						}
 						c1.removeAvailable(c.charValue());
-						reduction = true;
+						redc1 = true;
+					}
+					if (redc1) {
+						addReducedDot(pairA[0], pairA[1]);
 					}
 				}
 				boolean redc2 = false;
@@ -207,20 +238,23 @@ public class KropkiDotStrategies implements SolvingStrategy {
 					}
 				}
 				if (redc2) {
+					redc2 = false;
 					Character[] cc = c2.getCandidates().toArray(new Character[0]);
 					for (Character c : cc) {
 						if (c.charValue() == '2' || c.charValue() == '4') {
 							continue;
 						}
 						c2.removeAvailable(c.charValue());
-						reduction = true;
+						redc2 = true;
+					}
+					if (redc2) {
+						addReducedDot(pairA[2], pairA[3]);
 					}
 				}
 			}
 		}
-
 		if (!negativeConstrain) {
-			return reduction;
+			return;
 		}
 		// negative constrain
 		int gw = grid[0].length, gh = grid.length;
@@ -229,24 +263,29 @@ public class KropkiDotStrategies implements SolvingStrategy {
 				Cell cellA = grid[j][i];
 				if (i + 1 < gw && horizontalPairs[j][i]) {
 					Cell cellB = grid[j][i + 1];
-					reduction = reduction || reduceBlackPair(cellA, cellB, true);
-					reduction = reduction || reduceBlackPair(cellB, cellA, true);
+					if (reduceBlackPair(cellA, cellB, true)) {
+						addReducedDot(i, j);
+					}
+					if (reduceBlackPair(cellB, cellA, true)) {
+						addReducedDot(i + 1, j);
+					}
 				}
 				if (j + 1 < gh && verticalPairs[j][i]) {
 					Cell cellB = grid[j + 1][i];
-					reduction = reduction || reduceBlackPair(cellA, cellB, true);
-					reduction = reduction || reduceBlackPair(cellB, cellA, true);
+					if (reduceBlackPair(cellA, cellB, true)) {
+						addReducedDot(i, j);
+					}
+					if (reduceBlackPair(cellB, cellA, true)) {
+						addReducedDot(i, j + 1);
+					}
 				}
 			}
 		}
-		return reduction;
 	}
 
-	private boolean reduceV(Sudoku sudoku, SolveLog log, KropkiV dots) {
-		return false;
+	private void reduceV(Sudoku sudoku, SolveLog log, KropkiV dots) {
 	}
 
-	private boolean reduceX(Sudoku sudoku, SolveLog log, KropkiX dots) {
-		return false;
+	private void reduceX(Sudoku sudoku, SolveLog log, KropkiX dots) {
 	}
 }
