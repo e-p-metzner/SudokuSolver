@@ -52,6 +52,7 @@
 		},
 		{
 			"type": "Arrow",
+			"distinct": false,
 			"arrows": [
 				{ "pill": 1, "cells": [6, 1, 6, 2, 6, 3] },
 				{ "pill": 1, "cells": [7, 2, 7, 3, 7, 4] },
@@ -104,6 +105,7 @@
 		},
 		{
 			"type": "SumKillerCage",
+			"repetition": false,
 			"cages": [
 				{ "result": 11, "cells": [4, 4, 4, 5] } 
 			],

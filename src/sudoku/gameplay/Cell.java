@@ -37,6 +37,9 @@ public class Cell {
 
 	public void setContent(char content) {
 		this.content = content;
+		this.candidates.clear();
+		this.candidates.add(content);
+		this.available = new char[] { content };
 	}
 
 	public boolean isGiven() {
