@@ -1,6 +1,7 @@
 package sudoku.rules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import processing.data.JSONArray;
@@ -8,23 +9,27 @@ import processing.data.JSONObject;
 import sudoku.gameplay.Sudoku;
 import sudoku.gui.drawings.DrawingRegistry;
 import sudoku.gui.drawings.SudokuDraw;
+import sudoku.solver.ArrowStrategies;
 
 public class Arrow extends Rule {
 
 	private static final long serialVersionUID = 4888217891829905089L;
 
+	private boolean alldistinct;
 	private int[] pillsizes;
 	private int[][] lines;
 
 	public Arrow() {
 		super();
+		alldistinct = false;
 		pillsizes = new int[0];
 		lines = new int[0][];
+		strategies.add(new ArrowStrategies(this));
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void deserializeFromJson(JSONObject json) {
+		alldistinct = json.getBoolean("distinct");
 		JSONArray set = json.getJSONArray("arrows");
 		pillsizes = new int[set.size()];
 		lines = new int[set.size()][];
@@ -70,7 +75,22 @@ public class Arrow extends Rule {
 
 	@Override
 	public String printInfo() {
-		return null;
+		String[] lstr = new String[lines.length];
+		for (int l = 0; l < lines.length; l++) {
+			lstr[l] = Arrays.toString(lines[l]);
+		}
+		return "Arrow( pillsizes=" + Arrays.toString(pillsizes) + ", arrowlines=" + Arrays.toString(lstr) + " )";
 	}
 
+	public boolean allDistinct() {
+		return alldistinct;
+	}
+
+	public int[] getPillLengths() {
+		return pillsizes;
+	}
+
+	public int[][] getLines() {
+		return lines;
+	}
 }
