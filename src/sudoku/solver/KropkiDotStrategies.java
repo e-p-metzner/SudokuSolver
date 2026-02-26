@@ -34,7 +34,7 @@ public class KropkiDotStrategies implements SolvingStrategy {
 
 	@Override
 	public int difficulty() {
-		return 2;
+		return 4;
 	}
 
 	@Override
