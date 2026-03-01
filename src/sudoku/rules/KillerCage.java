@@ -12,18 +12,20 @@ public abstract class KillerCage extends Rule {
 
 	private static final long serialVersionUID = -2950473927180541417L;
 
+	protected boolean repetition;
 	protected int[] results;
 	protected int[][] cages;
 
 	protected KillerCage() {
 		super();
+		repetition = false;
 		results = new int[0];
 		cages = new int[0][];
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void deserializeFromJson(JSONObject json) {
+		repetition = json.getBoolean("repetition");
 		JSONArray set = json.getJSONArray("cages");
 		results = new int[set.size()];
 		cages = new int[set.size()][];
@@ -62,4 +64,15 @@ public abstract class KillerCage extends Rule {
 		}
 	}
 
+	public boolean canRepeat() {
+		return repetition;
+	}
+
+	public int[] getResults() {
+		return results;
+	}
+
+	public int[][] getCages() {
+		return cages;
+	}
 }

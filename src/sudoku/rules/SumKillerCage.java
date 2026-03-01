@@ -3,6 +3,7 @@ package sudoku.rules;
 import java.util.Arrays;
 
 import sudoku.gameplay.Sudoku;
+import sudoku.solver.KillerCageStrategies;
 
 public class SumKillerCage extends KillerCage {
 
@@ -10,6 +11,13 @@ public class SumKillerCage extends KillerCage {
 
 	public SumKillerCage() {
 		super();
+		strategies.add(new KillerCageStrategies(this, combination -> {
+			int sum = 0;
+			for (char c : combination) {
+				sum += c - '0';
+			}
+			return sum;
+		}));
 	}
 
 	@Override
