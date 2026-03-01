@@ -15,6 +15,23 @@ public class SolveHelper {
 		return sum;
 	};
 
+	public static boolean[][] calcvismask(Cell[][] grid, int[] cellcoords, boolean distinct) {
+		int count = cellcoords.length >> 1;
+		boolean[][] vismask = new boolean[count][count];
+		for (int j = 0; j < count; j++) {
+			vismask[j][j] = false;
+			Cell cell = grid[cellcoords[j + j + 1]][cellcoords[j + j]];
+			for (int i = j + 1; i < count; i++) {
+				vismask[j][i] = cell.sees_cell(cellcoords[i + i], cellcoords[i + i + 1]);
+				if (distinct) {
+					vismask[j][i] = true;
+				}
+				vismask[i][j] = vismask[j][i];
+			}
+		}
+		return vismask;
+	}
+
 	public static List<Integer> listPossibleCombiResults(Formula formula, Cell[][] grid, int[] cellcoords, boolean[][] visibility) {
 		int numc = cellcoords.length >>> 1;
 		char[] combination = new char[numc];
