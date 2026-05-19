@@ -80,7 +80,7 @@ public class NakedPair implements SolvingStrategy {
 
 					if (reduced) {
 						success = true;
-						String pair = String.format("R%dC%d,R%dC%d", cells[u1 + 1], cells[u1], cells[u2 + 1], cells[u2]);
+						String pair = String.format("R%dC%d,R%dC%d", cells[u1 + 1] + 1, cells[u1] + 1, cells[u2 + 1] + 1, cells[u2] + 1);
 						String setstr = set.get(0).charValue() + "/" + set.get(1).charValue();
 						log.logStep("Naked Pair %s in {%s} of %s", //
 								setstr, pair, addrule.getSubSetName());

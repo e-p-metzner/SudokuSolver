@@ -75,7 +75,7 @@ public class HiddenTriplet implements SolvingStrategy {
 						char[] valid = { validInputs[c1], validInputs[c2], validInputs[c3] };
 						String validstr = valid[0] + "/" + valid[1] + "/" + valid[2];
 						boolean reduced = false;
-						String pair = "";
+						StringBuilder tripplet = new StringBuilder();
 						for (int u = 0; u < 64; u++) {
 							if (((mask >>> u) & 1L) == 0L) {
 								continue;
@@ -84,7 +84,7 @@ public class HiddenTriplet implements SolvingStrategy {
 							int rw = cells[2 * u + 1];
 							Cell cell = grid[rw][cl];
 							char[] candidates = cell.getAvailables().clone();
-							pair += ",R" + (rw + 1) + "C" + (cl + 1);
+							tripplet.append(",R").append(rw + 1).append("C").append(cl + 1);
 							for (char c : candidates) {
 								if (!Tools.contains(c, valid)) {
 									if (cell.getCandidates().contains(c)) {
@@ -98,7 +98,7 @@ public class HiddenTriplet implements SolvingStrategy {
 						if (reduced) {
 							success = true;
 							log.logStep("Hidden Triplet %s in %s of %s:", //
-									validstr, pair.substring(1), addrule.getSubSetName());
+									validstr, tripplet.toString().substring(1), addrule.getSubSetName());
 						}
 					}
 				}

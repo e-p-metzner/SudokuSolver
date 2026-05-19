@@ -100,11 +100,11 @@ public class NakedQuadruple implements SolvingStrategy {
 
 							if (reduced) {
 								success = true;
-								String pair = String.format("R%dC%d,R%dC%d,R%dC%d,R%dC%d", cells[u1 + 1], cells[u1], cells[u2 + 1], cells[u2], cells[u3 + 1],
-										cells[u3], cells[u4 + 1], cells[u4]);
+								String quadruple = String.format("R%dC%d,R%dC%d,R%dC%d,R%dC%d", cells[u1 + 1] + 1, cells[u1] + 1, cells[u2 + 1] + 1,
+										cells[u2] + 1, cells[u3 + 1] + 1, cells[u3] + 1, cells[u4 + 1] + 1, cells[u4] + 1);
 								String setstr = set.get(0).charValue() + "/" + set.get(1).charValue();
 								log.logStep("Naked Quadruple %s in {%s} of %s", //
-										setstr, pair, addrule.getSubSetName());
+										setstr, quadruple, addrule.getSubSetName());
 							}
 						}
 					}
